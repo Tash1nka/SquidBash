@@ -4,14 +4,31 @@ bold=$(tput bold)
 nobold=$(tput sgr0)
 
 function show_help(){
-  echo "Help"
-}
+  echo ""
+  echo -e  "
+  ${bold}Basic rules:${nobold}
+    
+    Each player start with 20 marbles to gamble.
+
+    The game decide who start randomly.
+
+    When a player start, he choose an amount of marbles to gamble.
+
+    Then the other player bet if the number of marbles the first player
+    choosed was ${bold}odd${nobold} or ${bold}even${nobold}.
+
+    If the other player guess right. He win the first player's marbles.
+
+    The game end when a player has no more marbles to gamble with.
+  "
+  read -n 1 -s -r -p "${bold}Press any key to continue.${nobold}"
+} 
 
 function play() {
   # Init vars
   clear
-  player_marbles=10
-  computer_marbles=10
+  player_marbles=20
+  computer_marbles=20
   game_started=false
   choose_starting_player=$(( $RANDOM % 2 ))
   player=''
@@ -40,6 +57,11 @@ function play() {
       echo "${bold}Your turn:${nobold}"
       echo -en "You have \e[32m$player_marbles marbles\e[0m. How much do you want to use: "
       read player_played_marbles
+
+      until ! (( $player_played_marbles <= 0 )); do
+        echo "You must play a positive number of marbles."
+        read -p "Choose a number: " player_played_marbles
+      done
       
       while ! (( $player_played_marbles <= $player_marbles )); do
         read -p "Not enough marbles, choose $player_marbles or less: " player_played_marbles
@@ -58,6 +80,7 @@ function play() {
         computer_marbles=$(( $computer_marbles + $player_played_marbles ))
         echo -e "Computer guessed right. You \e[31mlose\e[0m this round."
         echo -e "You have \e[32m$player_marbles\e[0m marbles left."
+
       else
         player_marbles=$(( $player_marbles + $player_played_marbles ))
         computer_marbles=$(( $computer_marbles - $player_played_marbles ))
@@ -78,8 +101,6 @@ function play() {
       until [[ $computer_choice != 0 ]]; do
         computer_choice=$(( $RANDOM % $computer_marbles ))
       done  
-
-      echo "Computer choice: $computer_choice"
 
       # Player guess
       read -p "Enter your guess: [odd/even]: " player_guess
@@ -163,14 +184,22 @@ function menu() {
 
   read -p "Choose an option: " menu_option
 
-  if [[ $menu_option == 1 ]]; then
-    play
-  elif [[ $menu_option == 2 ]]; then
-    show_help
-    exit
-  elif [[ $menu_option == 3 ]]; then
-    exit
-  fi
+  while true; do
+    if [[ $menu_option == 1 ]]; then
+      play
+    elif [[ $menu_option == 2 ]]; then
+      show_help
+      menu
+    elif [[ $menu_option == 3 ]]; then
+      echo -e "${bold}Thanks for playing SquidBash !${nobold}"
+      echo "Exiting..."
+      sleep 1
+      clear
+      exit
+    else
+      read -p "Please enter a valid option: " menu_option
+    fi
+  done
 }
 
 menu
