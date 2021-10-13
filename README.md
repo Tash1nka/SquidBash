@@ -14,21 +14,8 @@ Then make it executeble with:
 ```bash
 sudo chmod +x /usr/local/games/squidbash
 ```
-<<<<<<< HEAD
-=======
-sudo curl -o /usr/local/games/squidbash \
-https://raw.githubusercontent.com/Tash1nka/SquidBash/main/squidbash
-```
->>>>>>> e8f9085e9eba71ed9d85651c905afa02048370f6
-
-Then make it executeble with:
-
-```bash
-sudo chmod +x /usr/local/games/squidbash
-```
 
 Now you can play my typing:
-
 ```bash
 squidbash
 ```
